@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
         tvVersion = (TextView)findViewById(R.id.tv_version);
         tvVersion.setText("版本号：" + getVersionName());
         checkVerson();
@@ -166,5 +166,12 @@ public class SplashActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("以后在说",null);
         builder.show();
+    }
+
+    /**
+     *进入主界面
+     */
+    private void enterHome(){
+
     }
 }
