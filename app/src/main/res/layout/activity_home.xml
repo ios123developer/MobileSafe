@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.szzgkon.mobilesafe.activity.HomeActivity">
+    tools:context="com.szzgkon.mobilesafe.activity.HomeActivity"
+    android:orientation="vertical">
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="功能列表"
+        android:textColor="@color/black"
+        android:background="#8866ff00"
+        android:textSize="22sp"
+        android:gravity="center" />
+    <com.szzgkon.mobilesafe.view.FocusedTextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="我是主页面"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:text="你妹的手机卫士。这种布局到底是什么鬼，什么鬼，哦呵呵呵呵"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         />
 
-</RelativeLayout>
+    <GridView
+        android:id="@+id/gv_home"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:numColumns="3"
+        android:verticalSpacing="20dp">
+
+    </GridView>
+
+</LinearLayout>

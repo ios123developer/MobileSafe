@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -191,6 +192,7 @@ public class SplashActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("最新版本" + mVrsionName);
         builder.setMessage(mDesc);
+//        builder.setCancelable(false);//不让用户取消对话框，用户体验太差
         builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -203,6 +205,13 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 enterHome();
+            }
+        });
+        //设置取消的监听，用户返回键时会触发
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+            enterHome();
             }
         });
         builder.show();
@@ -220,7 +229,12 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(ResponseInfo<File> responseInfo) {
                     Toast.makeText(SplashActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
-
+                       //跳转到系统下载界面
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.setDataAndType(Uri.fromFile(responseInfo.result),"application/vnd.android.package-archive");
+//                    startActivity(intent);
+                    startActivityForResult(intent,0);//如果用户取消安装的话会返回结果,然后回调onActivityResult方法
                 }
 
                 @Override
@@ -245,6 +259,12 @@ public class SplashActivity extends AppCompatActivity {
             Toast.makeText(SplashActivity.this,"sd卡没有就绪",Toast.LENGTH_SHORT).show();
         }
 
+    }
+     //如果用户取消安装的话，回调此方法
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        enterHome();
     }
 
     /**
