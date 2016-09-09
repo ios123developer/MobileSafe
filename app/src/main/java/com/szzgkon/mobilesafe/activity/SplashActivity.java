@@ -13,6 +13,8 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,7 @@ public class SplashActivity extends AppCompatActivity {
 
         }
     };
+    private RelativeLayout rlRoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,8 @@ public class SplashActivity extends AppCompatActivity {
 
         tvProgress = (TextView)findViewById(R.id.tv_progress);
 
+        rlRoot = (RelativeLayout)findViewById(R.id.rl_root);
+
         SharedPreferences mPref = getSharedPreferences("config",MODE_PRIVATE);
         //判断是否需要自动更新
         boolean autoUpdate = mPref.getBoolean("auto_update",true);
@@ -93,6 +98,10 @@ public class SplashActivity extends AppCompatActivity {
         }else {
             handler.sendEmptyMessageDelayed(CODE_ENTER_HOME,2000);//延时两秒发送进入主界面的消息
         }
+        //渐变的动画效果
+        AlphaAnimation anim = new AlphaAnimation(0.3f,1f);
+        anim.setDuration(2000);
+        rlRoot.startAnimation(anim);
 
     }
     private String getVersionName(){

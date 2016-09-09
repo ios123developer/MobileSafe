@@ -2,14 +2,19 @@ package com.szzgkon.mobilesafe.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.szzgkon.mobilesafe.R;
 
@@ -25,6 +30,8 @@ public class HomeActivity extends AppCompatActivity {
                                     R.drawable.home_callmsgsafe,R.drawable.home_trojan,
                                     R.drawable.home_sysoptimize,R.drawable.home_tools,
                                         R.drawable.home_settings};
+    private   AlertDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,10 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch(position){
+                case 0:
+                     //手机防盗
+                    showPasswordDialog();
+                     break;
                 case 8:
                     startActivity(new Intent(HomeActivity.this,SettingActivity.class));
                      break;
@@ -49,6 +60,51 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+    protected void showPasswordDialog(){
+        //判断是否设置密码
+        //如果没有设置过，弹出设置密码的弹窗
+        showPasswordSetDialog();
+    }
+
+    /**
+     * 设置密码的弹窗
+     */
+    private void showPasswordSetDialog() {
+        AlertDialog.Builder builder =  new AlertDialog.Builder(this);
+        dialog = builder.create();
+        View view = View.inflate(this,R.layout.dialog_set_password,null);
+//        dialog.setView(view);//将自定义的布局文件设置给dialog
+        dialog.setView(view,0,0,0,0);//设置边距为0，保证在2.x的版本上也兼容
+        Button btnOk = (Button)view.findViewById(R.id.btn_ok);
+        Button btnCancel = (Button)view.findViewById(R.id.btn_cancel);
+        final EditText etPassword = (EditText)findViewById(R.id.et_password);
+        final EditText etPasswordConfirm = (EditText)findViewById(R.id.et_password_confirm);
+
+        //对话框确定按钮
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             String password = etPassword.getText().toString();
+                String passwordConfirm = etPasswordConfirm.getText().toString();
+                if(!TextUtils.isEmpty(password) && !TextUtils.isEmpty(passwordConfirm)){
+
+                }else {
+                    Toast.makeText(HomeActivity.this,"输入内容不能为空",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+         //取消按钮
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              dialog.dismiss();//隐藏对话框
+            }
+        });
+
+        dialog.show();
+    }
+
     class HomeAdapter extends BaseAdapter{
 
         @Override
