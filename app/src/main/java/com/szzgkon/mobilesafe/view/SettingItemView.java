@@ -21,6 +21,10 @@ public class SettingItemView extends RelativeLayout{
     private TextView tvTitle;
     private TextView tvDesc;
     private CheckBox cbStatus;
+    private static final String NAMESPACE = "http://schemas.android.com/apk/res-auto";
+    private String mTitle;
+    private String mDescOn;
+    private String mDescOff;
 
     public SettingItemView(Context context) {
         super(context);
@@ -29,7 +33,20 @@ public class SettingItemView extends RelativeLayout{
 
     public SettingItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        //根据属性名称获取属性的值
+        mTitle = attrs.getAttributeValue(NAMESPACE,"cTitle");//根据属性名称获取属性的值
+        mDescOn = attrs.getAttributeValue(NAMESPACE,"desc_on");
+        mDescOff = attrs.getAttributeValue(NAMESPACE,"desc_off");
+
         initView();
+
+//       int attributeCount =  attrs.getAttributeCount();
+//        for (int i = 0; i < attributeCount; i++) {
+//            String attributeName = attrs.getAttributeName(i);
+//           String attributeValue =  attrs.getAttributeValue(i);
+//            System.out.println(attributeName + "=" + attributeValue);
+//        }
 
     }
 
@@ -46,6 +63,7 @@ public class SettingItemView extends RelativeLayout{
         tvTitle = (TextView)findViewById(R.id.tv_title);
         tvDesc = (TextView)findViewById(R.id.tv_desc);
         cbStatus = (CheckBox)findViewById(R.id.cb_status);
+        setTitle(mTitle);//设置标题
 
     }
     public void setTitle(String title){
@@ -59,6 +77,13 @@ public class SettingItemView extends RelativeLayout{
         return cbStatus.isChecked();
     }
     public void setChecked(boolean check){
+
        cbStatus.setChecked(check);
+        //根据选择的状态更新文本秒速
+        if(check){
+            setDesc(mDescOn);
+        }else {
+            setDesc(mDescOff);
+        }
     }
 }

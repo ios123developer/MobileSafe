@@ -20,13 +20,13 @@ public class SettingActivity extends AppCompatActivity {
         mPref = getSharedPreferences("config",MODE_PRIVATE);
 
         sivUpdate = (SettingItemView)findViewById(R.id.siv_update);
-        sivUpdate.setTitle("自动更新设置");
+//        sivUpdate.setTitle("自动更新设置");
         boolean autoUpdate = mPref.getBoolean("auto_update",true);
             if(autoUpdate){
-                sivUpdate.setDesc("自动更新已开启");
+//                sivUpdate.setDesc("自动更新已开启");
                 sivUpdate.setChecked(true);
             } else {
-                sivUpdate.setDesc("自动更新已关闭");
+//                sivUpdate.setDesc("自动更新已关闭");
                 sivUpdate.setChecked(false);
             }
 
@@ -37,13 +37,13 @@ public class SettingActivity extends AppCompatActivity {
                 if(sivUpdate.isChecked()){
                     //设置不勾选
                     sivUpdate.setChecked(false);
-                    sivUpdate.setDesc("自动更新已关闭");
+//                    sivUpdate.setDesc("自动更新已关闭");
                     //将配置保存起来（SharePreferences）
                     mPref.edit().putBoolean("auto_update",false).commit();
 
                 }else {
                     sivUpdate.setChecked(true);
-                    sivUpdate.setDesc("自动更新已开启");
+//                    sivUpdate.setDesc("自动更新已开启");
                     mPref.edit().putBoolean("auto_update",true).commit();
                 }
             }
