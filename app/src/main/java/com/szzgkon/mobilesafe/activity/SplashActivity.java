@@ -1,22 +1,30 @@
 package com.szzgkon.mobilesafe.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.szzgkon.mobilesafe.R;
 import com.szzgkon.mobilesafe.utils.StreamUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -26,7 +34,11 @@ public class SplashActivity extends AppCompatActivity {
     private static final int CODE_UPDATE_DIALOG = 0;
     private static final int CODE_NET_ERROR = 1;
     private static final int CODE_JSON_ERROR = 2;
+    private static final int CODE_ENTER_HOME = 3;//进入主界面
+
     private TextView tvVersion;
+    private TextView tvProgress;//下载进度展示
+
     private String mVrsionName;//版本名字
     private int mVrsionCode;//版本号
     private String mDesc;//版本描述
@@ -41,12 +53,15 @@ public class SplashActivity extends AppCompatActivity {
                  break;
                 case CODE_NET_ERROR:
                     Toast.makeText(SplashActivity.this,"网络错误",Toast.LENGTH_SHORT).show();
+                    enterHome();
                     break;
                 case CODE_JSON_ERROR:
                     Toast.makeText(SplashActivity.this,"json解析错误",Toast.LENGTH_SHORT).show();
-
+                        enterHome();
                     break;
-
+                case CODE_ENTER_HOME:
+                    enterHome();
+                    break;
             default:
                  break;
 
@@ -63,6 +78,9 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         tvVersion = (TextView)findViewById(R.id.tv_version);
         tvVersion.setText("版本号：" + getVersionName());
+
+        tvProgress = (TextView)findViewById(R.id.tv_progress);
+
         checkVerson();
     }
     private String getVersionName(){
@@ -102,7 +120,9 @@ public class SplashActivity extends AppCompatActivity {
      * 从服务器获取版本信息进行校验
      */
     private void checkVerson(){
-        Thread thread =  new Thread(){
+        final long startTime = System.currentTimeMillis();
+
+        final Thread thread =  new Thread(){
             @Override
             public void run() {
                 Message msg = handler.obtainMessage();
@@ -131,6 +151,9 @@ public class SplashActivity extends AppCompatActivity {
                                 //服务的VersionCode大于本地的VersionCode
                                 //说明有更新，弹出升级对话框
                                 msg.what = CODE_UPDATE_DIALOG;
+                            }else {
+                                //没有版本更新
+                                msg.what = CODE_ENTER_HOME;
                             }
                         } catch (JSONException e) {
                             msg.what = CODE_NET_ERROR;
@@ -142,6 +165,16 @@ public class SplashActivity extends AppCompatActivity {
 
                     e.printStackTrace();
                 }finally {
+                    long endTime = System.currentTimeMillis();
+                    long timeUsed = endTime - startTime;//访问网络花费的时间
+                    //强制休眠一段时间，保证闪屏页展示2秒钟
+                     if(timeUsed < 2000){
+                         try {
+                             Thread.sleep(2000-timeUsed);
+                         } catch (InterruptedException e) {
+                             e.printStackTrace();
+                         }
+                     }
                     handler.sendMessage(msg);
                     if(conn != null){
                         conn.disconnect();
@@ -162,16 +195,63 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 System.out.println("立即更新");
+                download();
+
             }
         });
-        builder.setNegativeButton("以后在说",null);
+        builder.setNegativeButton("以后在说", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                enterHome();
+            }
+        });
         builder.show();
+    }
+    /**
+     * 下载apk文件
+     */
+    private void download(){
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+            tvProgress.setVisibility(View.VISIBLE);//显示进度
+            String target = Environment.getExternalStorageDirectory() + "/update.apk";
+            //xutis
+            HttpUtils utils = new HttpUtils();
+            utils.download(mDownloadUrl, target, new RequestCallBack<File>() {
+                @Override
+                public void onSuccess(ResponseInfo<File> responseInfo) {
+                    Toast.makeText(SplashActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onFailure(HttpException e, String s) {
+                    Toast.makeText(SplashActivity.this,"下载失败",Toast.LENGTH_SHORT).show();
+                }
+
+                /**
+                 * 下载文件的进度函数
+                 * @param total
+                 * @param current
+                 * @param isUploading
+                 */
+                @Override
+                public void onLoading(long total, long current, boolean isUploading) {
+                    super.onLoading(total, current, isUploading);
+                    System.out.println("下载进度："+current+"/"+total);
+                    tvProgress.setText("下载进度："+current * 100/total +"%");
+                }
+            });
+        }else {
+            Toast.makeText(SplashActivity.this,"sd卡没有就绪",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     /**
      *进入主界面
      */
     private void enterHome(){
-
+        Intent intent = new Intent(this,HomeActivity.class);
+        startActivity(intent);
     }
 }
