@@ -6,14 +6,9 @@
     tools:context="com.szzgkon.mobilesafe.activity.HomeActivity"
     android:orientation="vertical">
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+      style="@style/TitleStyle"
         android:text="功能列表"
-        android:textColor="@color/black"
-        android:background="#8866ff00"
-        android:textSize="22sp"
-        android:gravity="center" />
+      />
     <com.szzgkon.mobilesafe.view.FocusedTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

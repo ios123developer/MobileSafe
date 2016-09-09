@@ -1,9 +1,11 @@
 package com.szzgkon.mobilesafe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -29,6 +31,23 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         gvHome = (GridView)findViewById(R.id.gv_home);
         gvHome.setAdapter(new HomeAdapter());
+        //gridview的点击事件
+        gvHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch(position){
+                case 8:
+                    startActivity(new Intent(HomeActivity.this,SettingActivity.class));
+                     break;
+
+                default:
+                     break;
+
+
+
+                }
+            }
+        });
     }
     class HomeAdapter extends BaseAdapter{
 

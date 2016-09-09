@@ -2,6 +2,7 @@ package com.szzgkon.mobilesafe.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -77,12 +78,22 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
         tvVersion = (TextView)findViewById(R.id.tv_version);
         tvVersion.setText("版本号：" + getVersionName());
 
         tvProgress = (TextView)findViewById(R.id.tv_progress);
 
-        checkVerson();
+        SharedPreferences mPref = getSharedPreferences("config",MODE_PRIVATE);
+        //判断是否需要自动更新
+        boolean autoUpdate = mPref.getBoolean("auto_update",true);
+        if(autoUpdate){
+            checkVerson();
+
+        }else {
+            handler.sendEmptyMessageDelayed(CODE_ENTER_HOME,2000);//延时两秒发送进入主界面的消息
+        }
+
     }
     private String getVersionName(){
        PackageManager packageManager = getPackageManager();
