@@ -29,4 +29,47 @@
 
     </style>
 
+    <style name="ContentStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+
+    <style name="NextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:drawableRight">@drawable/next</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:text">下一步</item>
+        <item name="android:onClick">next</item>
+    </style>
+
+    <!--<Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="上一步"
+        android:id="@+id/button1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/previous"
+        android:background="@drawable/button"
+        android:onClick="previous"/>-->
+    <style name="PreviousStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:drawableLeft">@drawable/previous</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:text">上一步</item>
+        <item name="android:onClick">previous</item>
+    </style>
 </resources>

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.szzgkon.mobilesafe.R;
+import com.szzgkon.mobilesafe.utils.MD5Utils;
 
 public class HomeActivity extends AppCompatActivity {
      private GridView gvHome;
@@ -99,9 +100,12 @@ public class HomeActivity extends AppCompatActivity {
             String password = etPassword.getText().toString();
             if(!TextUtils.isEmpty(password)){
                 String savedPassword = mPref.getString("password",null);
-                if(password.equals(savedPassword)){
-                    Toast.makeText(HomeActivity.this, "登录成功!",
-                            Toast.LENGTH_SHORT).show();
+
+                if(MD5Utils.encode(password).equals(savedPassword)){
+//                    Toast.makeText(HomeActivity.this, "登录成功!",
+//                            Toast.LENGTH_SHORT).show();
+                    //跳转到手机防盗页面
+                    startActivity(new Intent(HomeActivity.this,LostFindActivity.class));
                     dialog.dismiss();
 
                 }else {
@@ -154,9 +158,14 @@ public class HomeActivity extends AppCompatActivity {
                 // password!=null && !password.equals("")
                 if (!TextUtils.isEmpty(password) && !passwordConfirm.isEmpty()) {
                     if (password.equals(passwordConfirm)) {
-                         Toast.makeText(HomeActivity.this, "登录成功!",
-                         Toast.LENGTH_SHORT).show();
-                        mPref.edit().putString("password",password).commit();
+//                         Toast.makeText(HomeActivity.this, "登录成功!",
+//                         Toast.LENGTH_SHORT).show();
+                        //将密码保存起来
+                        mPref.edit()
+                                .putString("password", MD5Utils.encode(password))
+                                .commit();
+                        //跳转到手机防盗页面
+                        startActivity(new Intent(HomeActivity.this,LostFindActivity.class));
                             dialog.dismiss();
                     } else {
                         Toast.makeText(HomeActivity.this, "两次密码不一致!",
