@@ -1,6 +1,7 @@
 package com.szzgkon.mobilesafe.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,11 +32,16 @@ public class HomeActivity extends AppCompatActivity {
                                     R.drawable.home_sysoptimize,R.drawable.home_tools,
                                         R.drawable.home_settings};
     private   AlertDialog dialog;
+    private SharedPreferences mPref;
+    private EditText etPassword;
+    private EditText etPasswordConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mPref = getSharedPreferences("config",MODE_PRIVATE);
         gvHome = (GridView)findViewById(R.id.gv_home);
         gvHome.setAdapter(new HomeAdapter());
         //gridview的点击事件
@@ -62,49 +68,117 @@ public class HomeActivity extends AppCompatActivity {
     }
     protected void showPasswordDialog(){
         //判断是否设置密码
-        //如果没有设置过，弹出设置密码的弹窗
-        showPasswordSetDialog();
+       String savedPassword = mPref.getString("password",null);
+        if (!TextUtils.isEmpty(savedPassword)){
+            showPasswordInputDialog();
+        }else {
+            //如果没有设置过，弹出设置密码的弹窗
+            showPasswordSetDialog();
+        }
+
     }
 
     /**
-     * 设置密码的弹窗
+     * 输入密码的弹窗
      */
-    private void showPasswordSetDialog() {
+    private void showPasswordInputDialog() {
         AlertDialog.Builder builder =  new AlertDialog.Builder(this);
         dialog = builder.create();
-        View view = View.inflate(this,R.layout.dialog_set_password,null);
+        View view = View.inflate(this,R.layout.dialog_input_password,null);
+        final EditText etPassword = (EditText)view.findViewById(R.id.et_password);
+
 //        dialog.setView(view);//将自定义的布局文件设置给dialog
         dialog.setView(view,0,0,0,0);//设置边距为0，保证在2.x的版本上也兼容
         Button btnOk = (Button)view.findViewById(R.id.btn_ok);
         Button btnCancel = (Button)view.findViewById(R.id.btn_cancel);
-        final EditText etPassword = (EditText)findViewById(R.id.et_password);
-        final EditText etPasswordConfirm = (EditText)findViewById(R.id.et_password_confirm);
 
         //对话框确定按钮
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             String password = etPassword.getText().toString();
-                String passwordConfirm = etPasswordConfirm.getText().toString();
-                if(!TextUtils.isEmpty(password) && !TextUtils.isEmpty(passwordConfirm)){
+            String password = etPassword.getText().toString();
+            if(!TextUtils.isEmpty(password)){
+                String savedPassword = mPref.getString("password",null);
+                if(password.equals(savedPassword)){
+                    Toast.makeText(HomeActivity.this, "登录成功!",
+                            Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
 
                 }else {
-                    Toast.makeText(HomeActivity.this,"输入内容不能为空",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this, "密码错误!",
+                            Toast.LENGTH_SHORT).show();
                 }
 
+             }else {
+                Toast.makeText(HomeActivity.this, "输入框内容不能为空!",
+                        Toast.LENGTH_SHORT).show();
+            }
             }
         });
-         //取消按钮
+        //取消按钮
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              dialog.dismiss();//隐藏对话框
+                dialog.dismiss();//隐藏对话框
             }
         });
 
         dialog.show();
     }
 
+    /**
+     * 设置密码的弹窗
+     */
+    private void showPasswordSetDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog dialog = builder.create();
+
+        View view = View.inflate(this, R.layout.dialog_set_password, null);
+        // dialog.setView(view);// 将自定义的布局文件设置给dialog
+        dialog.setView(view, 0, 0, 0, 0);// 设置边距为0,保证在2.x的版本上运行没问题
+
+        final EditText etPassword = (EditText) view
+                .findViewById(R.id.et_password);
+        final EditText etPasswordConfirm = (EditText) view
+                .findViewById(R.id.et_password_confirm);
+
+        Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+
+        btnOK.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String password = etPassword.getText().toString();
+                String passwordConfirm = etPasswordConfirm.getText().toString();
+                // password!=null && !password.equals("")
+                if (!TextUtils.isEmpty(password) && !passwordConfirm.isEmpty()) {
+                    if (password.equals(passwordConfirm)) {
+                         Toast.makeText(HomeActivity.this, "登录成功!",
+                         Toast.LENGTH_SHORT).show();
+                        mPref.edit().putString("password",password).commit();
+                            dialog.dismiss();
+                    } else {
+                        Toast.makeText(HomeActivity.this, "两次密码不一致!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(HomeActivity.this, "输入框内容不能为空!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();// 隐藏dialog
+            }
+        });
+
+        dialog.show();
+    }
     class HomeAdapter extends BaseAdapter{
 
         @Override
