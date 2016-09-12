@@ -2,26 +2,64 @@ package com.szzgkon.mobilesafe.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.szzgkon.mobilesafe.R;
+import com.szzgkon.mobilesafe.view.SettingItemView;
 
-public class Setup2Activity extends AppCompatActivity {
+public class Setup2Activity extends BaseSetupActivity {
+
+
+    private SettingItemView sivSim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup2);
+        sivSim = (SettingItemView)findViewById(R.id.siv_sim);
+        String sim = mPref.getString("sim",null);
+        if(!TextUtils.isEmpty(sim)){
+            sivSim.setChecked(true);
+        }else {
+            sivSim.setChecked(false);
+        }
+
+        sivSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(sivSim.isChecked()){
+                    sivSim.setChecked(false);
+                    mPref.edit().remove("sim").commit();//删除已绑定的sim卡
+                }else {
+                    sivSim.setChecked(true);
+                    //保存sim卡信息
+                    TelephonyManager tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+                    String simSerialNumber = tm.getSimSerialNumber();//获取sim卡序列号
+                    System.out.println("sim卡序列号" + simSerialNumber);
+
+                    mPref.edit().putString("sim",simSerialNumber).commit();//将sim卡保存在SharePreferences中
+
+                }
+            }
+        });
+
     }
-        //下一页
-    public void next(View view){
-            startActivity(new Intent(this,Setup3Activity.class));
+
+    @Override
+    public void showPreviousPage() {
+        startActivity(new Intent(this,Setup1Activity.class));
         finish();
+        overridePendingTransition(R.anim.tran_previous_in,R.anim.tran_previous_out);
     }
-    //上一页
-    public void previous(View view){
-            startActivity(new Intent(this,Setup1Activity.class));
+
+    @Override
+    public void showNextPage() {
+        startActivity(new Intent(this,Setup3Activity.class));
         finish();
+        //两个界面之间的切换动画
+        overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
     }
+
 }
