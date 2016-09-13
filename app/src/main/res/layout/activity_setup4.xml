@@ -9,6 +9,7 @@
         style="@style/TitleStyle"
         android:text="4.恭喜您设置完成"/>
     <CheckBox
+        android:id="@+id/cb_protect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="防盗保护没有开启"/>

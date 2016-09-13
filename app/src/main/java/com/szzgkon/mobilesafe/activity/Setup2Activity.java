@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.szzgkon.mobilesafe.R;
+import com.szzgkon.mobilesafe.utils.ToastUtils;
 import com.szzgkon.mobilesafe.view.SettingItemView;
 
 public class Setup2Activity extends BaseSetupActivity {
@@ -56,10 +57,17 @@ public class Setup2Activity extends BaseSetupActivity {
 
     @Override
     public void showNextPage() {
-        startActivity(new Intent(this,Setup3Activity.class));
-        finish();
-        //两个界面之间的切换动画
-        overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
+        //如果sim卡没有绑定，就不允许进入下一个页面
+        String sim = mPref.getString("sim",null);
+        if(!TextUtils.isEmpty(sim)){
+            startActivity(new Intent(this,Setup3Activity.class));
+            finish();
+            //两个界面之间的切换动画
+            overridePendingTransition(R.anim.tran_in,R.anim.tran_out);
+        }else {
+            ToastUtils.showToast(this,"sim卡还未绑定哦");
+        }
+
     }
 
 }

@@ -18,8 +18,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="13812345678"
-          android:id="@+id/textView3"
+          android:id="@+id/tv_safe_phone"
           android:layout_gravity="right"
           android:layout_centerVertical="true"
           android:layout_alignParentRight="true"
@@ -41,6 +40,7 @@
           style="@style/ContentStyle"
           android:text="防盗保护是否开启" />
       <ImageView
+          android:id="@+id/iv_protect"
           android:layout_width="20dp"
           android:layout_height="20dp"
           android:src="@drawable/unlock"
