@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.szzgkon.mobilesafe.activity.DragViewActivity">
+    tools:context="com.szzgkon.mobilesafe.activity.DragViewActivity"
+    android:background="#5000">
 
 
     <TextView
@@ -36,5 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="90dp"
-        android:src="@drawable/drag"/>
+        android:src="@drawable/drag"
+        android:clickable="true"
+        />
 </RelativeLayout>

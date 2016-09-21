@@ -10,6 +10,8 @@ import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -26,8 +28,12 @@ public class AddressService extends Service {
     private MyListener listener;
     private OutCallRecevier recevier;
     private View view;
-    private WindowManager mWM;
     private SharedPreferences mPref;
+    private int startX;
+    private int startY;
+    private WindowManager mWM;
+    private int winWidth;
+    private int winHeight;
 
     public AddressService() {
     }
@@ -101,15 +107,29 @@ public class AddressService extends Service {
         //可以在第三方app中弹出自己的浮窗
         mWM = (WindowManager)this
                 .getSystemService(Context.WINDOW_SERVICE);
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        //屏幕宽高
+        winWidth = mWM.getDefaultDisplay().getWidth();
+        winHeight = mWM.getDefaultDisplay().getHeight();
+
+
+        final WindowManager.LayoutParams params = new WindowManager.LayoutParams();
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
         params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
         params.format = PixelFormat.TRANSLUCENT;
-        params.type = WindowManager.LayoutParams.TYPE_TOAST;
+        params.type = WindowManager.LayoutParams.TYPE_PHONE;
+        params.gravity = Gravity.LEFT + Gravity.TOP;//将重心位置设置为左上方，
+                                                // 也就是（0，0）从左上方开始，而不是
+                                                //默认的重心位置
         params.setTitle("Toast");
+
+        int lastX = mPref.getInt("lastX", 0);
+        int lastY = mPref.getInt("lastY", 0);
+
+        params.x = lastX;
+        params.y = lastX;
+
 
         view =  View.inflate(this, R.layout.toast_address,null);
         int[] bgs = new int[]{R.drawable.call_locate_white,
@@ -126,6 +146,59 @@ public class AddressService extends Service {
          TextView tvText = (TextView) view.findViewById(R.id.tv_number);
         tvText.setText(text);
         mWM.addView(view,params);//将view添加在屏幕上（window）
+       view.setOnTouchListener(new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    //初始化起点坐标
+                    startX = (int) event.getRawX();
+                    startY = (int) event.getRawY();
+                     break;
+                    case MotionEvent.ACTION_MOVE:
+                        int endX = (int)event.getRawX();
+                        int endY = (int)event.getRawY();
 
+                        //计算移动偏移量
+                        int dx = endX - startX;
+                        int dy = endY - startY;
+                        //更新浮窗
+                        params.x += dx;
+                        params.y += dy;
+
+
+                        //防止坐标偏离屏幕
+                        if(params.x < 0 ){
+                            params.x = 0;
+                        }
+                        if(params.y < 0 ){
+                            params.y = 0;
+                        }
+                        if(params.x > winWidth - view.getWidth()){
+                            params.x = winWidth - view.getWidth();
+                        }
+                        if(params.y > winHeight - view.getHeight()){
+                            params.y = winHeight - view.getHeight();
+                        }
+                        mWM.updateViewLayout(view,params);
+
+                        //重新初始化起点坐标
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        //记录坐标点
+                        SharedPreferences.Editor editor = mPref.edit();
+                        editor.putInt("lastX",params.x);
+                        editor.putInt("lastY",params.y);
+                        editor.commit();
+                        break;
+
+                default:
+                     break;
+                }
+              return true;
+          }
+      });
     }
 }
