@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="18sp"
-        android:text="你妹的手机卫士。这种布局到底是什么鬼，什么鬼，哦呵呵呵呵"
+        android:text="你妹的手机卫士。这种布局到底是什么鬼，什么鬼，哦呵呵呵呵，如果屏幕过大的话，这里的文字就少了，然后就不会有跑马灯了吗，这下挖化工区接壤"
         android:singleLine="true"
         android:ellipsize="marquee"
         android:layout_marginTop="5dp"

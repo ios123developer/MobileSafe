@@ -54,6 +54,9 @@ public class HomeActivity extends AppCompatActivity {
                      //手机防盗
                     showPasswordDialog();
                      break;
+                case 7:
+                    startActivity(new Intent(HomeActivity.this,AToolsActivity.class));
+                    break;
                 case 8:
                     startActivity(new Intent(HomeActivity.this,SettingActivity.class));
                      break;

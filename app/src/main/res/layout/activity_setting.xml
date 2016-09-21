@@ -15,6 +15,13 @@
         szzgkon:cTitle="自动更新设置"
         szzgkon:desc_on="自动更新已开启"
         szzgkon:desc_off="自动更新已关闭" />
+    <com.szzgkon.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        szzgkon:cTitle="电话归属地显示设置"
+        szzgkon:desc_on="归属地显示已经打开"
+        szzgkon:desc_off="归属地显示已经关闭" />
 
 
 

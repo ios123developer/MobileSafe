@@ -33,9 +33,18 @@ public class SmsReceiver extends BroadcastReceiver {
                 context.startService(new Intent(context, LocationService.class));//开启定位服务
 
                SharedPreferences sp = context.getSharedPreferences("config",Context.MODE_PRIVATE);
-               String location = sp.getString("location","");
-                
+               String location = sp.getString("location","getting location...");
 
+                abortBroadcast();//中断短信的传递，从而系统短信app就收不到内容了
+
+            }else if("#*wipedata*#".equals(messageBody)){
+
+
+                abortBroadcast();//中断短信的传递，从而系统短信app就收不到内容了
+            }else if("#*lockscreen*#".equals(messageBody)){
+
+                
+                abortBroadcast();//中断短信的传递，从而系统短信app就收不到内容了
             }
         }
 

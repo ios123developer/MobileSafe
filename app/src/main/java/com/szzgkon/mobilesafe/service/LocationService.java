@@ -74,6 +74,9 @@ public class LocationService extends Service {
                             "longtitude:" + location.getLongitude() +
                                     ";latitude:" + location.getLatitude()).commit();
 
+            //拿到经纬度之后就停掉服务
+            stopSelf();
+
         }
 
         //状态发生变化
