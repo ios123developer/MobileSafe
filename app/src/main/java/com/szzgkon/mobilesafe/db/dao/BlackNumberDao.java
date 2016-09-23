@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.SystemClock;
 
 import com.szzgkon.mobilesafe.bean.BlackNumberInfo;
 
@@ -108,6 +109,75 @@ public class BlackNumberDao {
         cursor.close();
         db.close();
 
+
+        //延时3秒
+        SystemClock.sleep(3000);
+
         return blackNumberInfos;
     }
+
+    /**
+     * 分页加载数据
+     * @param pageNumber 表示当前是哪一页
+     * @param pageSize 表示每一页有多少条数据
+     * @return
+     *
+     * limit 表示限制当前有多少条数据
+     * offset 表示跳过 从第几条开始
+     */
+    public List<BlackNumberInfo> findAllByPage(int pageNumber,int pageSize){
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("select number,mode from blacknumber limit ? offset ?",
+                                             new String[]{String.valueOf(pageSize),
+                                              String.valueOf(pageSize*pageNumber)});
+        ArrayList<BlackNumberInfo> blackNumberInfos = new ArrayList<>();
+        while (cursor.moveToNext()){
+            BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
+            blackNumberInfo.setMode(cursor.getString(1));
+            blackNumberInfo.setNumber(cursor.getString(0));
+            blackNumberInfos.add(blackNumberInfo);
+
+        }
+        cursor.close();
+        db.close();
+          return blackNumberInfos;
+    }
+
+    public int getTotalNumber(){
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) from blacknumber", null);
+        cursor.moveToNext();
+        int count = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    /**
+     * 分批处理
+     * @param startIndex 开始位置
+     * @param maxCount 每页展示的最大的条目
+     * @return
+     */
+    public List<BlackNumberInfo> findAllByBatch(int startIndex,int maxCount){
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("select number,mode from blacknumber limit ? offset ?",
+                new String[]{String.valueOf(maxCount),
+                        String.valueOf(startIndex)});
+        ArrayList<BlackNumberInfo> blackNumberInfos = new ArrayList<>();
+        while (cursor.moveToNext()){
+            BlackNumberInfo blackNumberInfo = new BlackNumberInfo();
+            blackNumberInfo.setMode(cursor.getString(1));
+            blackNumberInfo.setNumber(cursor.getString(0));
+            blackNumberInfos.add(blackNumberInfo);
+
+        }
+        cursor.close();
+        db.close();
+        return blackNumberInfos;
+    }
+
+
 }

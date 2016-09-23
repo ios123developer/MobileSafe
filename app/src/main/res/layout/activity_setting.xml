@@ -30,7 +30,13 @@
         android:id="@+id/scv_address_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    <com.szzgkon.mobilesafe.view.SettingItemView
+        android:id="@+id/siv_callSafe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        szzgkon:cTitle="黑名单更新设置"
+        szzgkon:desc_on="黑名单更新已开启"
+        szzgkon:desc_off="黑名单更新已关闭" />
 
 
 </LinearLayout>

@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.szzgkon.mobilesafe.R;
 import com.szzgkon.mobilesafe.service.AddressService;
+import com.szzgkon.mobilesafe.service.CallSafeService;
 import com.szzgkon.mobilesafe.utils.ServiceStatusUtils;
 import com.szzgkon.mobilesafe.view.SettingClickView;
 import com.szzgkon.mobilesafe.view.SettingItemView;
@@ -22,6 +23,7 @@ public class SettingActivity extends AppCompatActivity {
     private SettingClickView scvAddressLocation;//显示位置
 
     private SharedPreferences mPref;
+    private SettingItemView siv_callSafe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,35 @@ public class SettingActivity extends AppCompatActivity {
         initAddressView();
         initAddressStyle();
         initAddressLocation();
+        initBlackView();
+    }
+
+    /**
+     * 初始化黑名单
+     */
+    private void initBlackView() {
+        siv_callSafe = (SettingItemView)findViewById(R.id.siv_callSafe);
+        //根据归属地服务是否运行来更新checkBox
+        boolean serviceRunning = ServiceStatusUtils.isServiceRunning(this, "com.szzgkon.mobilesafe.service.CallSafeService");
+        if(serviceRunning){
+            siv_callSafe.setChecked(true);
+        }else {
+            siv_callSafe.setChecked(false);
+        }
+
+        siv_callSafe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(siv_callSafe.isChecked()){
+                    siv_callSafe.setChecked(false);
+                    stopService(new Intent(SettingActivity.this, CallSafeService.class));//停止归属地服务
+                }else {
+                    siv_callSafe.setChecked(true);
+                    startService(new Intent(SettingActivity.this, CallSafeService.class));//打开归属地服务
+                }
+            }
+        });
+
     }
 
     /**
