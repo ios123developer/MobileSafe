@@ -92,6 +92,10 @@ public class SplashActivity extends AppCompatActivity {
 
         SharedPreferences mPref = getSharedPreferences("config",MODE_PRIVATE);
 
+        //创建快捷方式
+        createShortcut();
+
+
 
        copyDB("address.db");//拷贝归属地查询数据库
 
@@ -109,6 +113,44 @@ public class SplashActivity extends AppCompatActivity {
         rlRoot.startAnimation(anim);
 
     }
+
+    /**
+     * 快捷方式
+     */
+    private void createShortcut() {
+
+
+
+        Intent intent = new Intent();
+
+        intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+
+        //如果为true，表示可以重复创建快捷方式
+        intent.putExtra("duplicate",false);
+
+        /**
+         * 1. 干什么事情
+         * 2.你叫什么名字
+         * 3.你长成什么样子
+         */
+
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+                android.graphics.
+                        BitmapFactory.
+                        decodeResource(getResources(),
+                                R.mipmap.ic_launcher));
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME,"黑马手机卫士");
+
+        //这里不能显示意图，这里要隐式意图,因为桌面不知道this是谁
+        Intent shortcut_intent = new Intent();
+
+        shortcut_intent.setAction("aaa.bbb.ccc");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT,shortcut_intent);
+
+        sendBroadcast(intent);
+
+    }
+
     private String getVersionName(){
        PackageManager packageManager = getPackageManager();
         try {
