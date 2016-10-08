@@ -172,6 +172,17 @@ public class TaskManagerActivity extends Activity {
                 holder.cb_app_status.setChecked(false);
 
             }
+
+            if(taskInfo.getPackageName().equals(getPackageName())){
+                //隐藏 "gone" 是不占用位置，INVISEBLE是占用位置
+                holder.cb_app_status.setVisibility(View.INVISIBLE);
+
+            }else {
+                //显示
+                holder.cb_app_status.setVisibility(View.VISIBLE);
+
+            }
+
             return view;
         }
     }
@@ -236,14 +247,18 @@ public class TaskManagerActivity extends Activity {
 
                 object = list_view.getItemAtPosition(position);
 
-                holder = (ViewHolder) view.getTag();
 
                 if (object != null && object instanceof TaskInfo) {
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+
                             TaskInfo taskInfo = (TaskInfo) object;
+                    holder = (ViewHolder) view.getTag();
+
+                    if(taskInfo.getPackageName().equals(getPackageName())){
+                        return;
+                    }
+
+
 
                             if (taskInfo.isChecked()) {
                                 taskInfo.setChecked(false);
@@ -253,8 +268,7 @@ public class TaskManagerActivity extends Activity {
                                 holder.cb_app_status.setChecked(true);
 
                             }
-                        }
-                    });
+
                 }
             }
         });

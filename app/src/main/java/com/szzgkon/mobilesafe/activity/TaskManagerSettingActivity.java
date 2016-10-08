@@ -1,5 +1,6 @@
 package com.szzgkon.mobilesafe.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.szzgkon.mobilesafe.R;
+import com.szzgkon.mobilesafe.service.KillProcessService;
+import com.szzgkon.mobilesafe.utils.ServiceStatusUtils;
 import com.szzgkon.mobilesafe.utils.SharedPreferensUtils;
 
 /**
@@ -31,6 +34,7 @@ import com.szzgkon.mobilesafe.utils.SharedPreferensUtils;
 public class TaskManagerSettingActivity extends AppCompatActivity {
 
     private SharedPreferences sp;
+    private CheckBox cb_status_kill_process;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,5 +58,35 @@ public class TaskManagerSettingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //定时清理进程
+        cb_status_kill_process = (CheckBox) findViewById(R.id.cb_status_kill_process);
+
+        final Intent intent = new Intent(this, KillProcessService.class);
+
+
+        cb_status_kill_process.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+
+                    startService(intent);
+                }else {
+                    stopService(intent);
+                }
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(ServiceStatusUtils.isServiceRunning(TaskManagerSettingActivity.this,"com.szzgkon.mobilesafe.service.KillProcessService")){
+            cb_status_kill_process.setChecked(true);
+        }else {
+            cb_status_kill_process.setChecked(false);
+        }
     }
 }

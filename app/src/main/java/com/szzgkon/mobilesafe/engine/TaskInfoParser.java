@@ -78,7 +78,6 @@ public class TaskInfoParser {
                 }
 
 
-                TaskInfos.add(taskInfo);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -89,6 +88,7 @@ public class TaskInfoParser {
 
             }
 
+            TaskInfos.add(taskInfo);
 
 
         }
