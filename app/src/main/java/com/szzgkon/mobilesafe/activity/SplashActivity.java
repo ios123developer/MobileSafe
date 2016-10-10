@@ -18,11 +18,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
 import com.szzgkon.mobilesafe.R;
+import com.szzgkon.mobilesafe.bean.Virus;
+import com.szzgkon.mobilesafe.db.dao.AntivirusDao;
 import com.szzgkon.mobilesafe.utils.StreamUtils;
 
 import org.json.JSONException;
@@ -77,6 +81,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     };
     private RelativeLayout rlRoot;
+    private AntivirusDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,11 @@ public class SplashActivity extends AppCompatActivity {
 
 
        copyDB("address.db");//拷贝归属地查询数据库
+        copyDB("antivirus.db");//拷贝病毒数据库
+
+        //更新病毒数据库
+         updataVirus();
+
 
         //判断是否需要自动更新
         boolean autoUpdate = mPref.getBoolean("auto_update",true);
@@ -111,6 +121,46 @@ public class SplashActivity extends AppCompatActivity {
         AlphaAnimation anim = new AlphaAnimation(0.3f,1f);
         anim.setDuration(2000);
         rlRoot.startAnimation(anim);
+
+    }
+
+    /**
+     * 进行更新病毒数据库
+     */
+    private void updataVirus() {
+        dao = new AntivirusDao();
+
+        //联网从服务器获取到最新数据的md5的特征码
+
+        HttpUtils httpUtils = new HttpUtils();
+        String url = "http://192.168.0.108:8080/virus.json";
+        httpUtils.send(HttpRequest.HttpMethod.GET, url, new RequestCallBack<String>() {
+            @Override
+            public void onSuccess(ResponseInfo<String> responseInfo) {
+                try {
+                    JSONObject jsonObject = new JSONObject(responseInfo.result);
+//                        String md5 = jsonObject.getString("md5");
+//
+//                        String desc = jsonObject.getString("desc");
+
+                    Gson gson = new Gson();
+                    Virus virus = gson.fromJson(responseInfo.result, Virus.class);
+
+
+                    dao.addVirus(virus.md5,virus.desc);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(HttpException e, String s) {
+
+            }
+        });
 
     }
 

@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class AddressDao {
        //路径比促使data/data目录的文件，否则数据库访问不到
-     private static final String PATH = "data/data/com.szzgkon.mobilesafe/files/address.db";
+       private static final String PATH = "data/data/com.szzgkon.mobilesafe/files/address.db";
 
     public static String getAddress(String number){
         String address = "未知号码";
