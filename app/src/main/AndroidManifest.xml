@@ -136,7 +136,8 @@
         </receiver>
 
         <activity android:name=".activity.AntivirusActivity" />
-        <activity android:name=".activity.AppLockActivity"></activity>
+        <activity android:name=".activity.AppLockActivity" />
+        <activity android:name=".activity.SetPwd"></activity>
     </application>
 
 </manifest>

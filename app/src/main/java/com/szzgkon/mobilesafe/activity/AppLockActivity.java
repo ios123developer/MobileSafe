@@ -64,12 +64,12 @@ public class AppLockActivity extends FragmentActivity implements View.OnClickLis
                 tv_unlock.setBackgroundResource(R.drawable.tab_left_pressed);
                 tv_lock.setBackgroundResource(R.drawable.tab_right_default);
 
-                ft.replace(R.id.fl_content,lockFragment);
+                ft.replace(R.id.fl_content,unlockFragment);
                 break;
             case R.id.tv_lock:
                 tv_unlock.setBackgroundResource(R.drawable.tab_left_default);
                 tv_lock.setBackgroundResource(R.drawable.tab_right_pressed);
-                ft.replace(R.id.fl_content,unlockFragment);
+                ft.replace(R.id.fl_content,lockFragment);
 
                 break;
 
