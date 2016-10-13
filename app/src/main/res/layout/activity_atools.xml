@@ -54,5 +54,18 @@
         android:padding="10dp"
         android:onClick="appLock"
         android:clickable="true"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="软件推荐"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:background="@drawable/btn_light_green_selector"
+        android:drawableLeft="@android:drawable/btn_star_big_on"
+        android:gravity="center_vertical"
+        android:drawablePadding="5dp"
+        android:padding="10dp"
+        android:onClick="appRecommend"
+        android:clickable="true"/>
 
 </LinearLayout>

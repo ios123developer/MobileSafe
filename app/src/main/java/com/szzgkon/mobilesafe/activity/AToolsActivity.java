@@ -99,4 +99,12 @@ public class AToolsActivity extends AppCompatActivity {
 
 
     }
+    //软件推荐
+    public void appRecommend(View view){
+//        Intent intent = new Intent(this,AppRecommendActivity.class);
+//        startActivity(intent);
+
+
+    }
+
 }

@@ -88,6 +88,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+
+
         tvVersion = (TextView)findViewById(R.id.tv_version);
         tvVersion.setText("版本号：" + getVersionName());
 
