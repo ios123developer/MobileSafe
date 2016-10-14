@@ -26,7 +26,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/progressBar2"
-            android:layout_gravity="left|top" />
+            style="@style/MyProgressBar"
+
+            />
 
         <TextView
             android:layout_width="wrap_content"
